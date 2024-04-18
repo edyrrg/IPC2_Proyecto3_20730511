@@ -9,7 +9,8 @@ class XMLDBService(ABC):
     def __init__(self, path_file):
         self.path_file = path_file
         self.check_bd_file()
-        self.root = ET.parse(self.path_file).getroot()
+        self.tree = ET.parse(self.path_file)
+        self.root = self.tree.getroot()
 
     def check_bd_file(self):
         if not os.path.exists(self.path_file):
@@ -31,9 +32,9 @@ class XMLDBService(ABC):
         pass
 
     @abstractmethod
-    def update_child(self, child):
+    def get_child_by_id(self, code):
         pass
 
     @abstractmethod
-    def get_child_by_id(self, _id):
+    def is_entity_exist(self, code):
         pass
