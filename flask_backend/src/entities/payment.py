@@ -1,8 +1,11 @@
+from datetime import datetime
+
+
 class Payment:
     def __init__(self, bank_code, customer_nit, date, amount):
         self.__bank_code = bank_code
         self.__customer_nit = customer_nit
-        self.__date = date
+        self.__date: datetime = date
         self.__amount: float = amount
 
     @property

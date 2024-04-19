@@ -11,8 +11,8 @@ class BankDBService(XMLDBService, EntityDBService):
         super().__init__(constants.PATH_DB_BANKS)
 
     def init_db(self):
-        customers = ET.Element("Banks")
-        tree = ET.ElementTree(customers)
+        banks = ET.Element("Banks")
+        tree = ET.ElementTree(banks)
         # indent file
         ET.indent(tree)
         tree.write(constants.PATH_DB_BANKS, encoding="utf-8", xml_declaration=True, short_empty_elements=False)

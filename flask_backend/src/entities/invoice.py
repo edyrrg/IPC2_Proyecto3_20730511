@@ -1,8 +1,11 @@
+from datetime import datetime
+
+
 class Invoice:
     def __init__(self, invoice_id, customer_nit, date, amount):
         self.__id = invoice_id
         self.__customer_nit = customer_nit
-        self.__date = date
+        self.__date: datetime = date
         self.__amount: float = amount
 
     @property
