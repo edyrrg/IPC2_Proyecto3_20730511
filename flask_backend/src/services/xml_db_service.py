@@ -14,6 +14,7 @@ class XMLDBService(ABC):
 
     def check_bd_file(self):
         if not os.path.exists(self.path_file):
+            print("DB File not exist: ", True)
             self.init_db()
 
     @abstractmethod

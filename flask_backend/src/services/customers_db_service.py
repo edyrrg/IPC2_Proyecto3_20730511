@@ -1,10 +1,12 @@
 from src.entities.customer import Customer
-from src.services.XMLDBService import XMLDBService
+from src.services.xml_db_service import XMLDBService
+from src.services.entity_db_service import EntityDBService
 from src.utils import constants
 import xml.etree.ElementTree as ET
 
 
-class CustomerDBService(XMLDBService):
+class CustomerDBService(XMLDBService, EntityDBService):
+
     def __init__(self):
         super().__init__(constants.PATH_BD_CUSTOMERS)
 
@@ -15,17 +17,14 @@ class CustomerDBService(XMLDBService):
         ET.indent(tree)
         tree.write(constants.PATH_BD_CUSTOMERS, encoding="utf-8", xml_declaration=True, short_empty_elements=False)
 
-    def append_child(self, new_item: Customer):
+    def append_child(self, new_customer: Customer):
         customer = ET.SubElement(self.root, "Customer")
         # Create tag nit and add text
         nit = ET.SubElement(customer, "NIT")
-        nit.text = new_item.nit
+        nit.text = new_customer.nit
         # Create tag name and add text
         name = ET.SubElement(customer, "Name")
-        name.text = new_item.name
-        # Create tag balance
-        balance = ET.SubElement(customer, "Balance")
-        balance.text = str(new_item.balance)
+        name.text = new_customer.name
         # add indent
         ET.indent(self.tree)
         self.tree.write(constants.PATH_BD_CUSTOMERS, encoding="utf-8", xml_declaration=True, short_empty_elements=False)
@@ -44,9 +43,8 @@ class CustomerDBService(XMLDBService):
                     break
             self.tree.write(constants.PATH_BD_CUSTOMERS, encoding="utf-8",
                             xml_declaration=True, short_empty_elements=False)
-            return True
         else:
-            return False
+            raise Exception("Customer not found then cannot update")
 
     def get_child_by_id(self, nit):
         for customer_el in self.root.findall('Customer'):
@@ -54,8 +52,7 @@ class CustomerDBService(XMLDBService):
             if cliente_id == str(nit):
                 nit = customer_el.find('NIT').text
                 name = customer_el.find('Name').text
-                balance = float(customer_el.find('Balance').text)
-                return Customer(nit, name, balance)
+                return Customer(nit, name)
         return None
 
     def is_entity_exist(self, nit):
@@ -65,12 +62,28 @@ class CustomerDBService(XMLDBService):
                 return True
         return False
 
+    def add_entity(self, new_customer: Customer):
+        if self.is_entity_exist(new_customer.nit):
+            self.update_child(new_customer.nit, new_customer.name)
+            return True
+        else:
+            self.append_child(new_customer)
+            return False
+
 
 if __name__ == '__main__':
     DBService = CustomerDBService()
-    customer = Customer("10420876-7", "Edy Rojas", 0.0)
-    DBService.append_child(customer)
-    customer_find = DBService.get_child_by_id("10420876-7")
+
+    customer_sample = Customer("10420876-6", "Rodrigo Leon Morales")
+    DBService.add_entity(customer_sample)
+    customer_find = DBService.get_child_by_id("10420876-6")
     print(customer_find)
-    customer_exist = DBService.is_entity_exist("10420876-4")
+
+    customer_sample = Customer("10420876-5", "Denilson Florentino")
+    DBService.add_entity(customer_sample)
+    customer_find = DBService.get_child_by_id("10420876-5")
+    print(customer_find)
+
+    customer_exist = DBService.is_entity_exist("10420876-5")
     print(customer_exist)
+    #DBService.init_db()
