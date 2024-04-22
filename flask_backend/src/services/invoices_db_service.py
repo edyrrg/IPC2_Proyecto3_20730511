@@ -51,3 +51,8 @@ class InvoicesDBService(XMLDBService):
             if invoice_id == str(_id):
                 return True
         return False
+
+
+if __name__ == '__main__':
+    service = InvoicesDBService()
+    service.init_db()

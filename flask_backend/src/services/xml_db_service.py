@@ -14,19 +14,17 @@ class XMLDBService(ABC):
 
     def check_bd_file(self):
         if not os.path.exists(self.path_file):
-            print("DB File not exist: ", True)
+            # print("DB File not exist: ", True)
             self.init_db()
 
     @abstractmethod
     def init_db(self):
         pass
-        #customers = ET.Element("Customers")
-
-        #tree = ET.ElementTree(customers)
+        # customers = ET.Element("Customers")
+        # tree = ET.ElementTree(customers)
         # para intentar el archivo
-        #ET.indent(tree)
-
-        #tree.write(constants.PATH_BD_CUSTOMERS, encoding="utf-8", xml_declaration=True, short_empty_elements=False)
+        # ET.indent(tree)
+        # tree.write(constants.PATH_BD_CUSTOMERS, encoding="utf-8", xml_declaration=True, short_empty_elements=False)
 
     @abstractmethod
     def append_child(self, child):

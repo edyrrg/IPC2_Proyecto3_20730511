@@ -4,7 +4,7 @@ from src.utils import constants
 import xml.etree.ElementTree as ET
 
 
-class PaymentsDbService(XMLDBService):
+class PaymentsDBService(XMLDBService):
 
     def __init__(self):
         super().__init__(constants.PATH_DB_PAYMENTS)
@@ -59,3 +59,8 @@ class PaymentsDbService(XMLDBService):
                     and date == payment.date.strftime("%d/%m/%Y")):
                 return True
         return False
+
+
+if __name__ == '__main__':
+    service = PaymentsDBService()
+    service.init_db()
