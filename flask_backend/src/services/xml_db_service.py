@@ -20,11 +20,6 @@ class XMLDBService(ABC):
     @abstractmethod
     def init_db(self):
         pass
-        # customers = ET.Element("Customers")
-        # tree = ET.ElementTree(customers)
-        # para intentar el archivo
-        # ET.indent(tree)
-        # tree.write(constants.PATH_BD_CUSTOMERS, encoding="utf-8", xml_declaration=True, short_empty_elements=False)
 
     @abstractmethod
     def append_child(self, child):
@@ -37,3 +32,11 @@ class XMLDBService(ABC):
     @abstractmethod
     def is_entity_exist(self, code):
         pass
+
+    @abstractmethod
+    def reset_db(self):
+        pass
+
+    def set_root(self):
+        self.tree = ET.parse(self.path_file)
+        self.root = self.tree.getroot()

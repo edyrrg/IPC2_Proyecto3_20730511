@@ -52,6 +52,9 @@ class InvoicesDBService(XMLDBService):
                 return True
         return False
 
+    def reset_db(self):
+        pass
+
 
 if __name__ == '__main__':
     service = InvoicesDBService()

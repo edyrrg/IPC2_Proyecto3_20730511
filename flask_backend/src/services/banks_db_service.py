@@ -1,11 +1,11 @@
 from src.entities.bank import Bank
 from src.services.xml_db_service import XMLDBService
-from src.services.entity_db_service import EntityDBService
+from src.services.entity_cru_db_service import EntityCRUDBService
 from src.utils import constants
 import xml.etree.ElementTree as ET
 
 
-class BankDBService(XMLDBService, EntityDBService):
+class BankDBService(XMLDBService, EntityCRUDBService):
 
     def __init__(self):
         super().__init__(constants.PATH_DB_BANKS)
@@ -18,6 +18,7 @@ class BankDBService(XMLDBService, EntityDBService):
         tree.write(constants.PATH_DB_BANKS, encoding="utf-8", xml_declaration=True, short_empty_elements=False)
 
     def append_child(self, new_bank: Bank):
+        self.set_root()
         bank = ET.SubElement(self.root, "Bank")
         # Create tag code and add text
         code = ET.SubElement(bank, "Code")
@@ -30,6 +31,7 @@ class BankDBService(XMLDBService, EntityDBService):
         self.tree.write(constants.PATH_DB_BANKS, encoding="utf-8", xml_declaration=True, short_empty_elements=False)
 
     def update_child(self, code, name):
+        self.set_root()
         bank_to_update = self.get_child_by_id(code)
         if bank_to_update:
             if name:
@@ -48,6 +50,7 @@ class BankDBService(XMLDBService, EntityDBService):
             return False
 
     def get_child_by_id(self, code):
+        self.set_root()
         for bank_el in self.root.findall('Bank'):
             bank_code = bank_el.find('Code').text
             if bank_code == str(code):
@@ -57,6 +60,7 @@ class BankDBService(XMLDBService, EntityDBService):
         return None
 
     def is_entity_exist(self, code):
+        self.set_root()
         for customer_el in self.root.findall('Bank'):
             cliente_id = customer_el.find('Code').text
             if cliente_id == str(code):
@@ -70,6 +74,14 @@ class BankDBService(XMLDBService, EntityDBService):
         else:
             self.append_child(new_bank)
             return False
+
+    def reset_db(self):
+        self.root.clear()
+        customers = ET.Element("Banks")
+        tree = ET.ElementTree(customers)
+        # indent file
+        ET.indent(tree)
+        tree.write(constants.PATH_BD_CUSTOMERS, encoding="utf-8", xml_declaration=True, short_empty_elements=False)
 
 
 if __name__ == '__main__':

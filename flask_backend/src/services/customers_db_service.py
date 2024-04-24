@@ -1,11 +1,11 @@
 from src.entities.customer import Customer
 from src.services.xml_db_service import XMLDBService
-from src.services.entity_db_service import EntityDBService
+from src.services.entity_cru_db_service import EntityCRUDBService
 from src.utils import constants
 import xml.etree.ElementTree as ET
 
 
-class CustomerDBService(XMLDBService, EntityDBService):
+class CustomerDBService(XMLDBService, EntityCRUDBService):
 
     def __init__(self):
         super().__init__(constants.PATH_BD_CUSTOMERS)
@@ -18,6 +18,7 @@ class CustomerDBService(XMLDBService, EntityDBService):
         tree.write(constants.PATH_BD_CUSTOMERS, encoding="utf-8", xml_declaration=True, short_empty_elements=False)
 
     def append_child(self, new_customer: Customer):
+        self.set_root()
         customer = ET.SubElement(self.root, "Customer")
         # Create tag nit and add text
         nit = ET.SubElement(customer, "NIT")
@@ -30,6 +31,7 @@ class CustomerDBService(XMLDBService, EntityDBService):
         self.tree.write(constants.PATH_BD_CUSTOMERS, encoding="utf-8", xml_declaration=True, short_empty_elements=False)
 
     def update_child(self, nit, name):
+        self.set_root()
         customer_to_update = self.get_child_by_id(nit)
         if customer_to_update:
             if name:
@@ -47,6 +49,7 @@ class CustomerDBService(XMLDBService, EntityDBService):
             raise Exception("Customer not found then cannot update")
 
     def get_child_by_id(self, nit):
+        self.set_root()
         for customer_el in self.root.findall('Customer'):
             cliente_id = customer_el.find('NIT').text
             if cliente_id == str(nit):
@@ -56,6 +59,7 @@ class CustomerDBService(XMLDBService, EntityDBService):
         return None
 
     def is_entity_exist(self, nit):
+        self.set_root()
         for customer_el in self.root.findall('Customer'):
             cliente_id = customer_el.find('NIT').text
             if cliente_id == str(nit):
@@ -69,6 +73,14 @@ class CustomerDBService(XMLDBService, EntityDBService):
         else:
             self.append_child(new_customer)
             return False
+
+    def reset_db(self):
+        self.root.clear()
+        customers = ET.Element("Customers")
+        tree = ET.ElementTree(customers)
+        # indent file
+        ET.indent(tree)
+        tree.write(constants.PATH_BD_CUSTOMERS, encoding="utf-8", xml_declaration=True, short_empty_elements=False)
 
 
 if __name__ == '__main__':
