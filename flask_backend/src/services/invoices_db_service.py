@@ -17,6 +17,7 @@ class InvoicesDBService(XMLDBService):
         tree.write(constants.PATH_DB_INVOICES, encoding="utf-8", xml_declaration=True, short_empty_elements=False)
 
     def append_child(self, new_invoice: Invoice):
+        self.set_root()
         invoice = ET.SubElement(self.root, "Invoice")
         # Create tag invoice id and add text
         invoice_id = ET.SubElement(invoice, "InvoiceID")
@@ -26,15 +27,16 @@ class InvoicesDBService(XMLDBService):
         customer_nit.text = new_invoice.customer_nit
         # Create tag date and add text
         date = ET.SubElement(invoice, "Date")
-        date.text = new_invoice.date.strftime("%d/%m/%Y")
+        date.text = new_invoice.date
         # Create tag amount and add text
         amount = ET.SubElement(invoice, "Amount")
-        amount.text = float(new_invoice.amount)
+        amount.text = new_invoice.amount
         # add indent
         ET.indent(self.tree)
         self.tree.write(constants.PATH_DB_INVOICES, encoding="utf-8", xml_declaration=True, short_empty_elements=False)
 
     def get_child_by_id(self, _id):
+        self.set_root()
         for invoice_el in self.root.findall('Invoice'):
             invoice_id = invoice_el.find('InvoiceID').text
             if invoice_id == str(_id):
@@ -46,6 +48,7 @@ class InvoicesDBService(XMLDBService):
         return None
 
     def is_entity_exist(self, _id):
+        self.set_root()
         for invoice_el in self.root.findall('Invoice'):
             invoice_id = invoice_el.find('InvoiceID').text
             if invoice_id == str(_id):
@@ -53,7 +56,12 @@ class InvoicesDBService(XMLDBService):
         return False
 
     def reset_db(self):
-        pass
+        self.root.clear()
+        customers = ET.Element("Invoices")
+        tree = ET.ElementTree(customers)
+        # indent file
+        ET.indent(tree)
+        tree.write(constants.PATH_DB_INVOICES, encoding="utf-8", xml_declaration=True, short_empty_elements=False)
 
 
 if __name__ == '__main__':

@@ -70,13 +70,16 @@ def transaction():
         # Invoice manage
         invoices = root.find("facturas")
 
-        invoice_entity_controller.create_entities(invoices)
+        count_invoices_created, count_invoices_duplicated, count_invoices_with_errors = (invoice_entity_controller
+                                                                                         .create_entities(invoices))
 
         # Payments manage
         payments = root.find("pagos")
 
-
-        return "OK", 200, {'Content-Type': 'application/xml'}
+        xml_response = ApiResponseXMLBuilder.transacciones(count_invoices_created,
+                                                           count_invoices_duplicated,
+                                                           count_invoices_with_errors)
+        return xml_response, 200, {'Content-Type': 'application/xml'}
     except Exception as e:
         print(f'Error: {str(e)}', 400)
         xml_response = ApiResponseXMLBuilder.basic(f"{str(e)}")
@@ -88,8 +91,8 @@ def reset_database(confirmation):
     try:
         if confirmation == 1:
             customer_db.reset_db()
-            bank_db.init_db()
-            invoice_db.init_db()
+            bank_db.reset_db()
+            invoice_db.reset_db()
             payments_db.init_db()
             xml_response = ApiResponseXMLBuilder.basic(f"Reset Database "
                                                        f"DB Customer, "

@@ -81,7 +81,7 @@ class BanksDBService(XMLDBService, EntityCRUDBService):
         tree = ET.ElementTree(customers)
         # indent file
         ET.indent(tree)
-        tree.write(constants.PATH_BD_CUSTOMERS, encoding="utf-8", xml_declaration=True, short_empty_elements=False)
+        tree.write(constants.PATH_DB_BANKS, encoding="utf-8", xml_declaration=True, short_empty_elements=False)
 
 
 if __name__ == '__main__':

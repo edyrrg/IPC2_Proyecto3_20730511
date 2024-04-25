@@ -31,3 +31,20 @@ class ApiResponseXMLBuilder:
         updated_banks.text = str(count_bank_updated)
         ET.indent(response)
         return ET.tostring(response, encoding='utf-8', method='xml', xml_declaration=True)
+
+    @staticmethod
+    def transacciones(count_invoice_created,
+                      count_invoice_duplicated,
+                      count_invoice_with_errors):
+        response = ET.Element('Transactions')
+        # format xml to how many invoices were created, duplicated and with errors
+        invoices = ET.SubElement(response, 'Invoices')
+        created_invoices = ET.SubElement(invoices, 'NewInvoices')
+        created_invoices.text = str(count_invoice_created)
+        updated_invoices = ET.SubElement(invoices, 'DuplicatedInvoices')
+        updated_invoices.text = str(count_invoice_duplicated)
+        invoices_with_errors = ET.SubElement(invoices, 'InvoicesWithErrors')
+        invoices_with_errors.text = str(count_invoice_with_errors)
+        # format xml to how many payments were created, duplicated and with errors
+        ET.indent(response)
+        return ET.tostring(response, encoding='utf-8', method='xml', xml_declaration=True)
