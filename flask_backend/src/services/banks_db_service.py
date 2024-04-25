@@ -5,7 +5,7 @@ from src.utils import constants
 import xml.etree.ElementTree as ET
 
 
-class BankDBService(XMLDBService, EntityCRUDBService):
+class BanksDBService(XMLDBService, EntityCRUDBService):
 
     def __init__(self):
         super().__init__(constants.PATH_DB_BANKS)
@@ -85,7 +85,7 @@ class BankDBService(XMLDBService, EntityCRUDBService):
 
 
 if __name__ == '__main__':
-    BDService = BankDBService()
+    BDService = BanksDBService()
     bank_sample = Bank("B001", "BanColombia")
     BDService.add_entity(bank_sample)
     bank_find = BDService.get_child_by_id("B001")

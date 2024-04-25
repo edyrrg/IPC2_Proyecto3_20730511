@@ -1,7 +1,7 @@
 from xml.etree import ElementTree as ET
 
 
-class ApiResponseXmlBuilder:
+class ApiResponseXMLBuilder:
 
     @staticmethod
     def basic(msg):

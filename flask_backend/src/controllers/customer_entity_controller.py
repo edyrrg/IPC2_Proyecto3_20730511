@@ -1,16 +1,15 @@
-import re
-
+from src.controllers.entity_controller import EntityController
 from src.entities.customer import Customer
-from src.services.customers_db_service import CustomerDBService
+from src.services.customers_db_service import CustomersDBService
 
 
-class CustomerEntityController:
+class CustomerEntityController(EntityController):
 
     def __init__(self):
-        self.customer_db_service: CustomerDBService = CustomerDBService()
+        self.customer_db_service: CustomersDBService = CustomersDBService()
         self.customer: Customer = None
 
-    def create_customers_entities(self, tag_banks):
+    def create_entities(self, tag_banks):
         count_customers_created = 0
         count_customers_updated = 0
         for customer_xml in tag_banks:
