@@ -3,22 +3,26 @@ import xml.etree.ElementTree as ET
 
 from src.controllers.bank_entity_controller import BankEntityController
 from src.controllers.customer_entity_controller import CustomerEntityController
-from src.services.banks_db_service import BankDBService
-from src.services.customers_db_service import CustomerDBService
+from src.controllers.invoice_entity_controller import InvoiceEntityController
+from src.controllers.payment_entity_controller import PaymentEntityController
+from src.services.banks_db_service import BanksDBService
+from src.services.customers_db_service import CustomersDBService
 from src.services.invoices_db_service import InvoicesDBService
 from src.services.payments_db_service import PaymentsDBService
-from src.utils.api_response_xml_builder import ApiResponseXmlBuilder
+from src.utils.api_response_xml_builder import ApiResponseXMLBuilder
 
 app = Flask(__name__)
 
 BASE_API_URL = 'api/v1'
 # setting db connection and manage entities
-bank_db = BankDBService()
-customer_db = CustomerDBService()
+bank_db = BanksDBService()
+customer_db = CustomersDBService()
 invoice_db = InvoicesDBService()
 payments_db = PaymentsDBService()
 bank_entity_controller = BankEntityController()
 customer_entity_controller = CustomerEntityController()
+invoice_entity_controller = InvoiceEntityController()
+payment_entity_controller = PaymentEntityController()
 
 
 @app.route(f'/{BASE_API_URL}/config', methods=['POST'])
@@ -35,15 +39,15 @@ def config():
         customers = root.find("clientes")
 
         count_customers_created, count_customers_updated = (customer_entity_controller
-                                                            .create_customers_entities(customers))
+                                                            .create_entities(customers))
 
         # Banks manage
         banks = root.find("bancos")
 
-        count_banks_created, count_banks_updated = bank_entity_controller.create_banks_entities(banks)
+        count_banks_created, count_banks_updated = bank_entity_controller.create_entities(banks)
 
         # build xml response
-        xml_response = ApiResponseXmlBuilder.config(count_customers_created
+        xml_response = ApiResponseXMLBuilder.config(count_customers_created
                                                     , count_customers_updated
                                                     , count_banks_created
                                                     , count_banks_updated)
@@ -51,7 +55,7 @@ def config():
         return xml_response, 200, {'Content-Type': 'application/xml'}
     except Exception as e:
         print(f'Error: {str(e)}', 400)
-        xml_response = ApiResponseXmlBuilder.basic(f"{str(e)}")
+        xml_response = ApiResponseXMLBuilder.basic(f"{str(e)}")
         return xml_response, 400, {'Content-Type': 'application/xml'}
 
 
@@ -68,15 +72,25 @@ def transaction():
         # Invoice manage
         invoices = root.find("facturas")
 
+        count_invoices_created, count_invoices_duplicated, count_invoices_with_errors = (invoice_entity_controller
+                                                                                         .create_entities(invoices))
+
         # Payments manage
         payments = root.find("pagos")
 
-        print("Invoices:", invoices, "Payments:", payments)
+        count_payments_created, count_payments_duplicated, count_payments_with_errors = (payment_entity_controller
+                                                                                         .create_entities(payments))
 
-        return "OK", 200, {'Content-Type': 'application/xml'}
+        xml_response = ApiResponseXMLBuilder.transacciones(count_invoices_created,
+                                                           count_invoices_duplicated,
+                                                           count_invoices_with_errors,
+                                                           count_payments_created,
+                                                           count_payments_duplicated,
+                                                           count_payments_with_errors)
+        return xml_response, 200, {'Content-Type': 'application/xml'}
     except Exception as e:
         print(f'Error: {str(e)}', 400)
-        xml_response = ApiResponseXmlBuilder.basic(f"{str(e)}")
+        xml_response = ApiResponseXMLBuilder.basic(f"{str(e)}")
         return xml_response, 400, {'Content-Type': 'application/xml'}
 
 
@@ -85,16 +99,16 @@ def reset_database(confirmation):
     try:
         if confirmation == 1:
             customer_db.reset_db()
-            bank_db.init_db()
-            invoice_db.init_db()
-            payments_db.init_db()
-            xml_response = ApiResponseXmlBuilder.basic(f"Reset Database "
+            bank_db.reset_db()
+            invoice_db.reset_db()
+            payments_db.reset_db()
+            xml_response = ApiResponseXMLBuilder.basic(f"Reset Database "
                                                        f"DB Customer, "
                                                        f"DB Banks, "
                                                        f"DB Invoices, "
                                                        f"DB Payments")
             return xml_response, 200, {'Content-Type': 'application/xml'}
-        xml_response = ApiResponseXmlBuilder.basic("400 Bad Request - Databases not restarted because the confirmation "
+        xml_response = ApiResponseXMLBuilder.basic("400 Bad Request - Databases not restarted because the confirmation "
                                                    "is invalid")
         return xml_response, 400, {'Content-Type': 'application/xml'}
     except Exception as e:
@@ -103,7 +117,7 @@ def reset_database(confirmation):
 
 @app.errorhandler(404)
 def not_found(error):
-    xml_response = ApiResponseXmlBuilder.basic(f"{str(error)}")
+    xml_response = ApiResponseXMLBuilder.basic(f"{str(error)}")
     return xml_response, 404, {'Content-Type': 'application/xml'}
 
 
