@@ -57,8 +57,8 @@ class InvoicesDBService(XMLDBService):
 
     def reset_db(self):
         self.root.clear()
-        customers = ET.Element("Invoices")
-        tree = ET.ElementTree(customers)
+        invoice = ET.Element("Invoices")
+        tree = ET.ElementTree(invoice)
         # indent file
         ET.indent(tree)
         tree.write(constants.PATH_DB_INVOICES, encoding="utf-8", xml_declaration=True, short_empty_elements=False)

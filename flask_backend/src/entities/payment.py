@@ -5,7 +5,7 @@ class Payment:
     def __init__(self, bank_code, customer_nit, date, amount):
         self.__bank_code = bank_code
         self.__customer_nit = customer_nit
-        self.__date: datetime = date
+        self.__date = date
         self.__amount: float = amount
 
     @property
@@ -39,6 +39,10 @@ class Payment:
     @amount.setter
     def amount(self, amount):
         self.__amount = float(amount)
+
+    def to_datetime(self):
+        invoice_date = datetime.strptime(self.date, "%d/%m/%Y").date()
+        return invoice_date.strftime("%d/%m/%Y")
 
     def __str__(self):
         return (f'bank code: {self.bank_code}, '

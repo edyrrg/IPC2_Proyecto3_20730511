@@ -4,6 +4,7 @@ import xml.etree.ElementTree as ET
 from src.controllers.bank_entity_controller import BankEntityController
 from src.controllers.customer_entity_controller import CustomerEntityController
 from src.controllers.invoice_entity_controller import InvoiceEntityController
+from src.controllers.payment_entity_controller import PaymentEntityController
 from src.services.banks_db_service import BanksDBService
 from src.services.customers_db_service import CustomersDBService
 from src.services.invoices_db_service import InvoicesDBService
@@ -21,6 +22,7 @@ payments_db = PaymentsDBService()
 bank_entity_controller = BankEntityController()
 customer_entity_controller = CustomerEntityController()
 invoice_entity_controller = InvoiceEntityController()
+payment_entity_controller = PaymentEntityController()
 
 
 @app.route(f'/{BASE_API_URL}/config', methods=['POST'])
@@ -76,9 +78,15 @@ def transaction():
         # Payments manage
         payments = root.find("pagos")
 
+        count_payments_created, count_payments_duplicated, count_payments_with_errors = (payment_entity_controller
+                                                                                         .create_entities(payments))
+
         xml_response = ApiResponseXMLBuilder.transacciones(count_invoices_created,
                                                            count_invoices_duplicated,
-                                                           count_invoices_with_errors)
+                                                           count_invoices_with_errors,
+                                                           count_payments_created,
+                                                           count_payments_duplicated,
+                                                           count_payments_with_errors)
         return xml_response, 200, {'Content-Type': 'application/xml'}
     except Exception as e:
         print(f'Error: {str(e)}', 400)
@@ -93,7 +101,7 @@ def reset_database(confirmation):
             customer_db.reset_db()
             bank_db.reset_db()
             invoice_db.reset_db()
-            payments_db.init_db()
+            payments_db.reset_db()
             xml_response = ApiResponseXMLBuilder.basic(f"Reset Database "
                                                        f"DB Customer, "
                                                        f"DB Banks, "

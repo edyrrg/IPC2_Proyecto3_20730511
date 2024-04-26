@@ -17,6 +17,7 @@ class PaymentsDBService(XMLDBService):
         tree.write(constants.PATH_DB_PAYMENTS, encoding="utf-8", xml_declaration=True, short_empty_elements=False)
 
     def append_child(self, new_payment: Payment):
+        self.set_root()
         payment = ET.SubElement(self.root, "Payment")
         # Create tag bank code and add text
         bank_code = ET.SubElement(payment, "BankCode")
@@ -26,16 +27,17 @@ class PaymentsDBService(XMLDBService):
         customer_nit.text = new_payment.customer_nit
         # Create tag date and add text
         date = ET.SubElement(payment, "Date")
-        date.text = new_payment.date.strftime("%d/%m/%Y")
+        date.text = new_payment.date
         # Create tag amount and add text
         amount = ET.SubElement(payment, "Amount")
-        amount.text = float(new_payment.amount)
+        amount.text = new_payment.amount
         # add indent
         ET.indent(self.tree)
-        self.tree.write(constants.PATH_DB_INVOICES, encoding="utf-8", xml_declaration=True, short_empty_elements=False)
+        self.tree.write(constants.PATH_DB_PAYMENTS, encoding="utf-8", xml_declaration=True, short_empty_elements=False)
 
     def get_child_by_id(self, payment: Payment):
-        for payment_el in self.root.findall('Invoice'):
+        self.set_root()
+        for payment_el in self.root.findall('Payment'):
             bank_code = payment_el.find('BankCode').text
             customer_nit = payment_el.find('CustomerNIT').text
             date = payment_el.find('Date').text
@@ -50,18 +52,24 @@ class PaymentsDBService(XMLDBService):
         return None
 
     def is_entity_exist(self, payment: Payment):
-        for payment_el in self.root.findall('Invoice'):
+        self.set_root()
+        for payment_el in self.root.findall('Payment'):
             bank_code = payment_el.find('BankCode').text
             customer_nit = payment_el.find('CustomerNIT').text
             date = payment_el.find('Date').text
             if (bank_code == str(payment.bank_code)
                     and customer_nit == str(payment.customer_nit)
-                    and date == payment.date.strftime("%d/%m/%Y")):
+                    and date == payment.date):
                 return True
         return False
 
     def reset_db(self):
-        pass
+        self.root.clear()
+        payment = ET.Element("Payments")
+        tree = ET.ElementTree(payment)
+        # indent file
+        ET.indent(tree)
+        tree.write(constants.PATH_DB_PAYMENTS, encoding="utf-8", xml_declaration=True, short_empty_elements=False)
 
 
 if __name__ == '__main__':
