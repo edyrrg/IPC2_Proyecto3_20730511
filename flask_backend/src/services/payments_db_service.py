@@ -71,6 +71,42 @@ class PaymentsDBService(XMLDBService):
         ET.indent(tree)
         tree.write(constants.PATH_DB_PAYMENTS, encoding="utf-8", xml_declaration=True, short_empty_elements=False)
 
+    def get_payments_by_nit(self, nit):
+        self.set_root()
+        payments = self.root.findall('Payment')
+        payments_customer = ET.Element('Payments')
+        for payment_el in payments:
+            if str(payment_el.find('CustomerNIT').text).strip() == nit:
+                payment = ET.SubElement(payments_customer, "Payment")
+                # create element xml to InvoiceID
+                invoice_id = ET.SubElement(payment, "BankCode")
+                invoice_id.text = payment_el.find('BankCode').text
+                # create element xml to Customer NIT
+                customer_nit = ET.SubElement(payment, "CustomerNIT")
+                customer_nit.text = payment_el.find('CustomerNIT').text
+                # create element xml to Date
+                date = ET.SubElement(payment, "Date")
+                date.text = payment_el.find('Date').text
+                # create element xml to Amount
+                amount = ET.SubElement(payment, "Amount")
+                amount.text = payment_el.find('Amount').text
+        return payments_customer
+
+    def exist_invoice_with_this_nit(self, nit):
+        self.set_root()
+        payments = self.root.findall('Payment')
+        for payment_el in payments:
+            invoice_nit = payment_el.find('CustomerNIT').text
+            if str(nit).strip() == str(invoice_nit).strip():
+                return True
+        return False
+
+    def is_db_empty(self):
+        self.set_root()
+        if not self.root.findall('Payment'):
+            return True
+        return False
+
 
 if __name__ == '__main__':
     service = PaymentsDBService()

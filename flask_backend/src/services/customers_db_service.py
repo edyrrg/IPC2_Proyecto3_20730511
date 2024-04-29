@@ -58,6 +58,19 @@ class CustomersDBService(XMLDBService, EntityCRUDBService):
                 return Customer(nit, name)
         return None
 
+    def get_customer_tree_by_id(self, nit):
+        self.set_root()
+        for customer_el in self.root.findall('Customer'):
+            cliente_id = customer_el.find('NIT').text
+            if cliente_id == str(nit):
+                customer_tree = ET.Element("Customer")
+                nit = ET.SubElement(customer_tree, "NIT")
+                nit.text = customer_el.find('NIT').text
+                name = ET.SubElement(customer_tree, "Name")
+                name.text = customer_el.find('Name').text
+                return customer_tree
+        return None
+
     def is_entity_exist(self, nit):
         self.set_root()
         for customer_el in self.root.findall('Customer'):
@@ -81,6 +94,23 @@ class CustomersDBService(XMLDBService, EntityCRUDBService):
         # indent file
         ET.indent(tree)
         tree.write(constants.PATH_BD_CUSTOMERS, encoding="utf-8", xml_declaration=True, short_empty_elements=False)
+
+    def is_db_empty(self):
+        self.set_root()
+        if not self.root.findall('Customer'):
+            return True
+        return False
+
+    def get_all_customers(self):
+        self.set_root()
+        list_customers = []
+        all_customers = self.root.findall('Customer')
+        for customer in all_customers:
+            nit = customer.find('NIT').text
+            name = customer.find('Name').text
+            list_customers.append(Customer(nit, name))
+        list_customers.sort(key=lambda x: x.nit)
+        return list_customers
 
 
 if __name__ == '__main__':

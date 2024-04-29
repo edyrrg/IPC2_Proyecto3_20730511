@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask import Flask, send_from_directory, request, jsonify, Response
 import xml.etree.ElementTree as ET
 
@@ -10,6 +12,7 @@ from src.services.customers_db_service import CustomersDBService
 from src.services.invoices_db_service import InvoicesDBService
 from src.services.payments_db_service import PaymentsDBService
 from src.utils.api_response_xml_builder import ApiResponseXMLBuilder
+from src.utils.general_utils import GeneralUtils
 
 app = Flask(__name__)
 
@@ -54,7 +57,6 @@ def config():
         # print("DATA RETORNADA:", xml_response)
         return xml_response, 200, {'Content-Type': 'application/xml'}
     except Exception as e:
-        print(f'Error: {str(e)}', 400)
         xml_response = ApiResponseXMLBuilder.basic(f"{str(e)}")
         return xml_response, 400, {'Content-Type': 'application/xml'}
 
@@ -64,7 +66,8 @@ def transaction():
     try:
         # Get XML request
         xml_data = request.data
-
+        if customer_db.is_db_empty() and bank_db.is_db_empty():
+            raise Exception('404: DB Customer and DB Bank are empty, please upload file config first')
         # Validate root tag, root tag must be "config"
         root = ET.fromstring(xml_data)
         if root.tag != 'transacciones':
@@ -87,9 +90,11 @@ def transaction():
                                                            count_payments_created,
                                                            count_payments_duplicated,
                                                            count_payments_with_errors)
+
+        print(customer_db.is_db_empty())
+        print(bank_db.is_db_empty())
         return xml_response, 200, {'Content-Type': 'application/xml'}
     except Exception as e:
-        print(f'Error: {str(e)}', 400)
         xml_response = ApiResponseXMLBuilder.basic(f"{str(e)}")
         return xml_response, 400, {'Content-Type': 'application/xml'}
 
@@ -113,6 +118,74 @@ def reset_database(confirmation):
         return xml_response, 400, {'Content-Type': 'application/xml'}
     except Exception as e:
         return f'Error: {str(e)}', 500
+
+
+@app.route(f'/{BASE_API_URL}/customers/<customer_nit>', methods=['GET'])
+def customer(customer_nit):
+    try:
+        if customer_db.is_db_empty() and bank_db.is_db_empty():
+            raise Exception('404: DB Customer and DB Bank are empty, please upload file config first')
+        if not customer_nit:
+            raise Exception('400: Bad Request - No customer nit provided')
+
+        customer_nit = str(customer_nit).strip()
+
+        if not customer_db.is_entity_exist(customer_nit):
+            raise Exception('404: No customer nit exists in the database DBCustomer')
+
+        customer_tree = customer_db.get_customer_tree_by_id(customer_nit)
+
+        invoices_customer_tree = invoice_db.get_invoices_by_nit(customer_nit)
+
+        payments_customer_tree = payments_db.get_payments_by_nit(customer_nit)
+
+        xml_response = ApiResponseXMLBuilder.response_customer_resume(customer_tree,
+                                                                      invoices_customer_tree,
+                                                                      payments_customer_tree)
+        return xml_response, 200, {'Content-Type': 'application/xml'}
+    except Exception as e:
+        xml_response = ApiResponseXMLBuilder.basic(f"{str(e)}")
+        return xml_response, 400, {'Content-Type': 'application/xml'}
+
+
+@app.route(f'/{BASE_API_URL}/customers/all', methods=['GET'])
+def all_customers():
+    try:
+        if customer_db.is_db_empty() and bank_db.is_db_empty():
+            raise Exception('404: DB Customer and DB Bank are empty, please upload file config first')
+        if invoice_db.is_db_empty() and payments_db.is_db_empty():
+            raise Exception('404: DB Invoices and DB Payments are empty, please upload file transacciones first')
+        list_all_customers = customer_db.get_all_customers()
+        list_all_customers_resume = []
+        for customer_el in list_all_customers:
+            if (invoice_db.exist_invoice_with_this_nit(customer_el.nit) or
+                    payments_db.exist_invoice_with_this_nit(customer_el.nit)):
+                customer_tree = customer_db.get_customer_tree_by_id(customer_el.nit)
+                if invoice_db.exist_invoice_with_this_nit(customer_el.nit):
+                    invoices_customer_tree = invoice_db.get_invoices_by_nit(customer_el.nit)
+                    customer_tree.append(invoices_customer_tree)
+                if payments_db.exist_invoice_with_this_nit(customer_el.nit):
+                    payments_customer_tree = payments_db.get_payments_by_nit(customer_el.nit)
+                    customer_tree.append(payments_customer_tree)
+                list_all_customers_resume.append(customer_tree)
+        xml_response = ApiResponseXMLBuilder.response_all_customers_resume(list_all_customers_resume)
+        return xml_response, 200, {'Content-Type': 'application/xml'}
+    except Exception as e:
+        xml_response = ApiResponseXMLBuilder.basic(f"{str(e)}")
+        return xml_response, 400, {'Content-Type': 'application/xml'}
+
+
+@app.route(f'/{BASE_API_URL}/payments/<date>', methods=['GET'])
+def payment_resume(date):
+    try:
+        print("current", date)
+        prev_date, curr_date = GeneralUtils.calculate_three_previous_months(date)
+        print("curr", curr_date, "prev", prev_date)
+        xml_response = ApiResponseXMLBuilder.basic("OK")
+        return xml_response, 200, {'Content-Type': 'application/xml'}
+    except Exception as e:
+        xml_response = ApiResponseXMLBuilder.basic(f"{str(e)}")
+        return xml_response, 400, {'Content-Type': 'application/xml'}
 
 
 @app.errorhandler(404)

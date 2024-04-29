@@ -83,6 +83,12 @@ class BanksDBService(XMLDBService, EntityCRUDBService):
         ET.indent(tree)
         tree.write(constants.PATH_DB_BANKS, encoding="utf-8", xml_declaration=True, short_empty_elements=False)
 
+    def is_db_empty(self):
+        self.set_root()
+        if not self.root.findall('Bank'):
+            return True
+        return False
+
 
 if __name__ == '__main__':
     BDService = BanksDBService()
