@@ -13,8 +13,10 @@ class BankEntityController(EntityController):
         count_banks_created = 0
         count_banks_updated = 0
         for bank_xml in tag_banks:
-            code = bank_xml.find("codigo").text
-            name = bank_xml.find("nombre").text
+            code = str(bank_xml.find("codigo").text).strip()
+            name = str(bank_xml.find("nombre").text).strip()
+            if not code and not name:
+                continue
             self.bank = Bank(code, name)
             if self.bank_db_service.add_entity(new_bank=self.bank):
                 count_banks_updated += 1

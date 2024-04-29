@@ -39,7 +39,7 @@ class ApiResponseXMLBuilder:
                       count_payments_created,
                       count_payments_duplicated,
                       count_payments_with_errors,):
-        response = ET.Element('Transactions')
+        response = ET.Element('Response')
         # format xml to how many invoices were created, duplicated and with errors
         invoices = ET.SubElement(response, 'Invoices')
         created_invoices = ET.SubElement(invoices, 'NewInvoices')
@@ -59,3 +59,20 @@ class ApiResponseXMLBuilder:
 
         ET.indent(response)
         return ET.tostring(response, encoding='utf-8', method='xml', xml_declaration=True)
+
+    @staticmethod
+    def response_customer_resume(customer_tree, invoices_tree, payments_tree):
+        response = ET.Element('Response')
+        response.append(customer_tree)
+        customer_tree.append(invoices_tree)
+        customer_tree.append(payments_tree)
+        ET.indent(response)
+        return ET.tostring(response, encoding='utf-8', method='xml', xml_declaration=True)
+
+    @staticmethod
+    def response_all_customers_resume(list_all_customers_resume):
+        response = ET.Element('Response')
+        for customer_tree in list_all_customers_resume:
+            response.append(customer_tree)
+        ET.indent(response)
+        return ET.tostring(response, encoding='utf-8', method='xml', xml_declaration=True, short_empty_elements=False)
