@@ -1,0 +1,17 @@
+.response-active {
+    visibility: visible;
+    transition: 3s ease-in;
+}
+
+.response-data {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ffffff;
+    padding: 25px;
+    border-radius: 10px;
+}
+
+.response-not-active {
+    visibility: hidden;
+}

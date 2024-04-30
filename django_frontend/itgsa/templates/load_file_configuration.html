@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ block.super }} | Reset DataBase{% endblock %}
+
+{% block content %}
+    <div class="content-data-base">
+        <div class="content-card">
+            <h1 class="title is-3">
+                Load File Configuration
+            </h1>
+            <form class="box form-base" action="/process_file_config" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input class="roboto-medium" type="file" name="xml_file">
+                <button class="button roboto-medium" type="submit">Send File</button>
+            </form>
+        </div>
+        <div class="response-data {{ response_active }}">
+            {{ response_msg|linebreaksbr }}
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,40 @@
+.notification {
+    position: fixed;
+    bottom: 0;
+    display: none;
+}
+
+.active {
+    display: block;
+    animation: myAlert 6s ease 0s 1 normal forwards;
+}
+
+.error {
+    background: #ff0000;
+}
+
+.okay {
+    background: #21c08b;
+}
+
+@keyframes myAlert {
+    0% {
+		opacity: 0;
+		transform: translateX(-50px);
+	}
+
+	33% {
+		opacity: 1;
+		transform: translateX(0);
+	}
+
+    66% {
+		opacity: 1;
+		transform: translateX(0);
+	}
+
+	100% {
+		opacity: 0;
+		transform: translateX(-50px);
+	}
+}
