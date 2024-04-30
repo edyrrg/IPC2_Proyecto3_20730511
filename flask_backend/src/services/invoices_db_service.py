@@ -84,7 +84,7 @@ class InvoicesDBService(XMLDBService):
                 amount.text = invoice_el.find('Amount').text
         return invoices_customer
 
-    def exist_invoice_with_this_nit(self, nit):
+    def exist_invoices_with_this_nit(self, nit):
         self.set_root()
         invoices = self.root.findall('Invoice')
         for invoice_el in invoices:

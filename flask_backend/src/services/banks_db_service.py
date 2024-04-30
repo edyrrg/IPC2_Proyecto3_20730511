@@ -89,6 +89,16 @@ class BanksDBService(XMLDBService, EntityCRUDBService):
             return True
         return False
 
+    def get_all_banks(self):
+        self.set_root()
+        list_banks = []
+        all_banks = self.root.findall('Bank')
+        for banks in all_banks:
+            nit = banks.find('Code').text
+            name = banks.find('Name').text
+            list_banks.append(Bank(nit, name))
+        return list_banks
+
 
 if __name__ == '__main__':
     BDService = BanksDBService()
@@ -104,4 +114,3 @@ if __name__ == '__main__':
     print(bank_find)
     bank_exist = BDService.is_entity_exist("B005")
     print(bank_exist)
-    #BDService.init_db()

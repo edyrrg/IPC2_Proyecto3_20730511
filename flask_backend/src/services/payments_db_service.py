@@ -79,8 +79,8 @@ class PaymentsDBService(XMLDBService):
             if str(payment_el.find('CustomerNIT').text).strip() == nit:
                 payment = ET.SubElement(payments_customer, "Payment")
                 # create element xml to InvoiceID
-                invoice_id = ET.SubElement(payment, "BankCode")
-                invoice_id.text = payment_el.find('BankCode').text
+                bank_code = ET.SubElement(payment, "BankCode")
+                bank_code.text = payment_el.find('BankCode').text
                 # create element xml to Customer NIT
                 customer_nit = ET.SubElement(payment, "CustomerNIT")
                 customer_nit.text = payment_el.find('CustomerNIT').text
@@ -92,7 +92,7 @@ class PaymentsDBService(XMLDBService):
                 amount.text = payment_el.find('Amount').text
         return payments_customer
 
-    def exist_invoice_with_this_nit(self, nit):
+    def exist_payments_with_this_nit(self, nit):
         self.set_root()
         payments = self.root.findall('Payment')
         for payment_el in payments:
@@ -101,11 +101,41 @@ class PaymentsDBService(XMLDBService):
                 return True
         return False
 
+    def exist_payment_with_this_bank_code(self, code):
+        self.set_root()
+        payments = self.root.findall('Payment')
+        for payment_el in payments:
+            bank_code = payment_el.find('BankCode').text
+            if str(code).strip() == str(bank_code).strip():
+                return True
+        return False
+
     def is_db_empty(self):
         self.set_root()
         if not self.root.findall('Payment'):
             return True
         return False
+
+    def get_payments_by_bank_code(self, code):
+        self.set_root()
+        payments = self.root.findall('Payment')
+        payments_banks = ET.Element('Payments')
+        for payment_el in payments:
+            if str(payment_el.find('BankCode').text).strip() == code:
+                payment = ET.SubElement(payments_banks, "Payment")
+                # create element xml to InvoiceID
+                invoice_id = ET.SubElement(payment, "BankCode")
+                invoice_id.text = payment_el.find('BankCode').text
+                # create element xml to Customer NIT
+                customer_nit = ET.SubElement(payment, "CustomerNIT")
+                customer_nit.text = payment_el.find('CustomerNIT').text
+                # create element xml to Date
+                date = ET.SubElement(payment, "Date")
+                date.text = payment_el.find('Date').text
+                # create element xml to Amount
+                amount = ET.SubElement(payment, "Amount")
+                amount.text = payment_el.find('Amount').text
+        return payments_banks
 
 
 if __name__ == '__main__':

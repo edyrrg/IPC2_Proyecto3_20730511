@@ -109,6 +109,7 @@ class CustomersDBService(XMLDBService, EntityCRUDBService):
             nit = customer.find('NIT').text
             name = customer.find('Name').text
             list_customers.append(Customer(nit, name))
+            list_customers.append(Customer(nit, name))
         list_customers.sort(key=lambda x: x.nit)
         return list_customers
 
