@@ -1,0 +1,47 @@
+{% load static %}
+
+<nav class="navbar is-spaced">
+    <div class="navbar-brand">
+        <a href="{% url 'home' %}">
+            <figure class="image is-64x64">
+            <img src="{% static 'images/bendy-customer-segmentation-and-target-audience.gif' %}"/>
+            </figure>
+        </a>
+    </div>
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            <a class="navbar-item nav-item_mc {{ home_active }}" href="{% url 'home' %}">ITGSA</a>
+            <a class="navbar-item nav-item_mc {{ reset_db_active }}" href="{% url 'reset_data_base' %}">Reset DB</a>
+            <a class="navbar-item nav-item_mc {{ load_file_configuration_active }}" 
+               href="{% url 'load_file_configuration' %}">Load File Configuration</a>
+            <a class="navbar-item nav-item_mc {{ load_file_transactions_active }}" 
+               href="{% url 'load_files_transactions' %}">Load File Transaction</a>
+            <div class="navbar-item has-dropdown is-hoverable">
+                <a class="navbar-link nav-item_mc">
+                    Requests
+                </a>
+                <div class="navbar-dropdown">
+                    <a class="navbar-item nav-item_mc">
+                        Consult Account Statement
+                    </a>
+                    <a class="navbar-item nav-item_mc">
+                         Consult Income
+                    </a>
+                </div>
+            </div>
+            <div class="navbar-item has-dropdown is-hoverable">
+                <a class="navbar-link nav-item_mc">
+                    Help Me!
+                </a>
+                <div class="navbar-dropdown">
+                    <a class="navbar-item nav-item_mc {{ student_data_active }}" href="{% url 'student_data' %}">
+                        Student Information
+                    </a>
+                    <a class="navbar-item nav-item_mc {{ documentation_active }}" href="{% url 'documentation' %}">
+                        See Documentation
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>

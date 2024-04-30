@@ -1,0 +1,25 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <title>{% block title %}ITGSA{% endblock %}</title>
+</head>
+<body>
+    <header>{% include 'components/nav_menu.html' %}</header>
+    <main class="main">
+        {% block content %}
+        {% endblock %}
+    </main>
+    <div class="notification {{ is_active }}">
+        <p>Notification</p>
+        {{ message|linebreaksbr }}
+    </div>
+</body>
+</html>

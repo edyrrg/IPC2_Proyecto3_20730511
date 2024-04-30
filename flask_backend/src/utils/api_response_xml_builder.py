@@ -24,7 +24,7 @@ class ApiResponseXMLBuilder:
         updated_customers = ET.SubElement(customers, 'Updated')
         updated_customers.text = str(count_customer_updated)
         # format xml to how many banks were created and updated
-        banks = ET.SubElement(customers, 'Banks')
+        banks = ET.SubElement(response, 'Banks')
         created_banks = ET.SubElement(banks, 'Created')
         created_banks.text = str(count_bank_created)
         updated_banks = ET.SubElement(banks, 'Updated')
@@ -49,7 +49,7 @@ class ApiResponseXMLBuilder:
         invoices_with_errors = ET.SubElement(invoices, 'InvoicesWithErrors')
         invoices_with_errors.text = str(count_invoice_with_errors)
         # format xml to how many payments were created, duplicated and with errors
-        payments = ET.SubElement(invoices, 'Payments')
+        payments = ET.SubElement(response, 'Payments')
         created_payments = ET.SubElement(payments, 'NewPayments')
         created_payments.text = str(count_payments_created)
         updated_payments = ET.SubElement(payments, 'DuplicatedPayments')

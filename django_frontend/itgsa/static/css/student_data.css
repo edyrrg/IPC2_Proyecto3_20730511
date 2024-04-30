@@ -1,0 +1,20 @@
+.container-student-data {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    padding: 50px;
+    border: 1px solid white;
+    gap: 10px;
+    border-radius: 10px;
+}
+
+.container-student-name, .container-student-id {
+    display: flex;
+    flex-direction: row;
+    gap: 7px;
+}
+
+.student-data-text {
+    font-size: 20px;
+}

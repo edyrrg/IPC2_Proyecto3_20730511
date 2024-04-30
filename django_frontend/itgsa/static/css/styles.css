@@ -1,0 +1,63 @@
+@import "fonts.css";
+@import "reset_data_base.css";
+@import "notification.css";
+@import "documentation.css";
+@import "student_data.css";
+@import "form-to-load-file.css";
+@import "response.css";
+
+.nav-item_mc {
+    color: #ffffff;
+}
+
+* {
+    /*background: #ffffff;*/
+    color: white;
+    box-sizing: border-box;
+}
+
+html {
+    color: #ffffff;
+}
+
+body {
+    color: #ffffff;
+}
+
+@media screen and (min-width: 1024px) {
+    .navbar-dropdown a.navbar-item:not(.is-active,.is-selected) {
+        color: #ffffff !important;
+    }
+}
+
+.main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 75vh;
+}
+
+.navbar-brand {
+    margin-right: 15px;
+}
+
+.form-base {
+    background: none;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    justify-content: center;
+    align-items: center;
+}
+
+.content-card {
+    border: 1px solid #ffffff;
+    padding: 32px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+

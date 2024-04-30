@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ block.super }} | Reset DataBase{% endblock %}
+
+{% block content %}
+    <div class="content-data-base">
+        <div class="content-card">
+            <h1 class="title is-3">
+                Reset Data Base
+            </h1>
+            <form class="box form-base" action="/send_database_restart" method="get">
+                {% csrf_token %}
+                <button class="button roboto-medium" name="req" type="submit" value="OK">Reset Data</button>
+            </form>
+        </div>
+        <div class="response-data {{ response_active }}">
+            {{ response_msg|linebreaksbr }}
+        </div>
+    </div>
+{% endblock %}
