@@ -12,4 +12,7 @@ urlpatterns = [
     path("process_file_config", views.process_file_config, name="process_file_config"),
     path("process_file_transactions", views.process_file_transactions, name="process_file_transactions"),
     path("consult_account_statement", views.consult_account_statement, name="consult_account_statement"),
+    path("send_consult_account_statement", views.send_consult_account_statement, name="send_consult_account_statement"),
+    path("send_consult_all_accounts_statements", views.send_consult_all_accounts_statements,
+         name="send_consult_all_accounts_statements"),
 ]

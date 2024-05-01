@@ -148,3 +148,14 @@ def process_file_transactions(request):
 def consult_account_statement(request):
     context = {'consult_account_statement_active': 'is-selected'}
     return render(request, 'consult_account_statement.html', context)
+
+
+def send_consult_account_statement(request):
+    print(request)
+    context = {'consult_account_statement_active': 'is-selected'}
+    return render(request, 'consult_account_statement.html', context)
+
+
+def send_consult_all_accounts_statements(request):
+    context = {'consult_account_statement_active': 'is-selected'}
+    return render(request, 'consult_account_statement.html', context)
