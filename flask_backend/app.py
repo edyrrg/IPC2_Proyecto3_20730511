@@ -121,7 +121,7 @@ def reset_database(confirmation):
 
 
 @app.route(f'/{BASE_API_URL}/customers/<customer_nit>', methods=['GET'])
-def customer(customer_nit):
+def customers(customer_nit):
     try:
         if customer_db.is_db_empty() and bank_db.is_db_empty():
             raise Exception('404: DB Customer and DB Bank are empty, please upload file config first')
@@ -176,7 +176,7 @@ def all_customers():
 
 
 @app.route(f'/{BASE_API_URL}/payments/<date>', methods=['GET'])
-def payment_resume(date):
+def payments_resumes(date):
     try:
         if customer_db.is_db_empty() and bank_db.is_db_empty():
             raise Exception('404: DB Customer and DB Bank are empty, please upload file config first')
