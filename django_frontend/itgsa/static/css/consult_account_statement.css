@@ -1,0 +1,26 @@
+.content-consult-account {
+    height: 100%;
+    width: 100%;
+    align-items: start;
+    padding-top: 10px;
+}
+
+.content-consult-account-child {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /*border: 1px solid #ffffff;*/
+}
+
+.consult-response {
+    border: 1px solid #ffffff;
+}
+
+.spacing {
+    gap: 5px;
+}
+
+.form-consult-nit {
+    gap: 10px !important;
+}

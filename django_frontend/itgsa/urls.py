@@ -11,4 +11,5 @@ urlpatterns = [
     path("load_files_transactions", views.load_file_transactions, name="load_files_transactions"),
     path("process_file_config", views.process_file_config, name="process_file_config"),
     path("process_file_transactions", views.process_file_transactions, name="process_file_transactions"),
+    path("consult_account_statement", views.consult_account_statement, name="consult_account_statement"),
 ]

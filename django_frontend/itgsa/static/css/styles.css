@@ -5,6 +5,8 @@
 @import "student_data.css";
 @import "form-to-load-file.css";
 @import "response.css";
+@import "consult_account_statement.css";
+@import "home.css";
 
 .nav-item_mc {
     color: #ffffff;
@@ -60,4 +62,11 @@ body {
     align-items: center;
     justify-content: center;
 }
+
+/*.label-input {*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    align-items: start;*/
+/*    justify-content: start;*/
+/*}*/
 

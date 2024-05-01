@@ -143,3 +143,8 @@ def process_file_transactions(request):
                    'response_active': 'response-not-active',
                    'message': f'Please first select file to upload (ㆆ_ㆆ)'}
     return render(request, 'load_file_transactions.html', context)
+
+
+def consult_account_statement(request):
+    context = {'consult_account_statement_active': 'is-selected'}
+    return render(request, 'consult_account_statement.html', context)

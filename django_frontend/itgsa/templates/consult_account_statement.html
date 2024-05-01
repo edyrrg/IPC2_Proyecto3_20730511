@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ block.super }} | Reset DataBase{% endblock %}
+
+{% block content %}
+    <div class="content-consult-account columns">
+        <div class="content-consult-account-child column is-one-third">
+            <div class="content-card spacing">
+                <h1 class="title is-5">
+                    Consult Account Form
+                </h1>
+                <div class="form-consult-by-nit">
+                    <form class="box form-base form-consult-nit">
+                        <label>
+                            <input class="input is-rounded"
+                                   type="text"
+                                   placeholder="Enter NIT"
+                                   name="customer_nit"
+                                   id="customer_nit">
+                        </label>
+                        <button class="button">Consult Customer</button>
+                    </form>
+                </div>
+                <div class="form-consult-all">
+                    <form class="box form-base">
+                        <button class="button">Consult All Customers</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="content-consult-account-child consult-response column">
+            here
+        </div>
+    </div>
+{% endblock %}
