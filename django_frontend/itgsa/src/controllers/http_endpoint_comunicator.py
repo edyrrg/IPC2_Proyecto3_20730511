@@ -20,3 +20,9 @@ class HttpEndpointComunicator:
         url_transactions_endpoint = "http://127.0.0.1:5000/api/v1/transaction"
         response = requests.post(url_transactions_endpoint, headers=HttpEndpointComunicator.HEADERS, data=data_formated)
         return response
+
+    @staticmethod
+    def send_reset_data_base():
+        url_reset_data_base_endpoint = "http://127.0.0.1:5000/api/v1/reset_database/1"
+        response = requests.get(url_reset_data_base_endpoint)
+        return response

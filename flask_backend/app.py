@@ -67,7 +67,7 @@ def transaction():
         # Get XML request
         xml_data = request.data
         if customer_db.is_db_empty() and bank_db.is_db_empty():
-            raise Exception('404: DB Customer and DB Bank are empty, please upload file config first')
+            raise Exception('DB Customer and DB Bank are empty, please upload file config first')
         # Validate root tag, root tag must be "config"
         root = ET.fromstring(xml_data)
         if root.tag != 'transacciones':
@@ -96,7 +96,7 @@ def transaction():
         return xml_response, 200, {'Content-Type': 'application/xml'}
     except Exception as e:
         xml_response = ApiResponseXMLBuilder.basic(f"{str(e)}")
-        return xml_response, 400, {'Content-Type': 'application/xml'}
+        return xml_response, 404, {'Content-Type': 'application/xml'}
 
 
 @app.route(f'/{BASE_API_URL}/reset_database/<int:confirmation>', methods=['GET'])
